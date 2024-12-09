@@ -1,28 +1,6 @@
-import { parseArgs } from "jsr:@std/cli";
+import { getInput } from "../utils/utils.js";
 
-const decoder = new TextDecoder("utf8");
-const flags = parseArgs(Deno.args);
-
-let input;
-
-if (!flags.input) {
-	for await (const chunk of Deno.stdin.readable) {
-		input = decoder.decode(chunk);
-	}
-
-	if (!input) {
-		console.error("[Error]: Missing input");
-		Deno.exit(1);
-	}
-} else {
-	try {
-		await Deno.lstat("input.txt");
-		input = decoder.decode(Deno.readFileSync("input.txt"));
-	} catch (err) {
-		console.log("not exists!", err);
-		Deno.exit(1);
-	}
-}
+const input = await getInput();
 
 const lists = input.split("\n");
 const firstList = [];
